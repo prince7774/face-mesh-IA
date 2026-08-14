@@ -65,7 +65,9 @@ class GestureDetector:
         fired = []
 
         if not face_landmarker_result.face_landmarks:
-            return fired  # nenhum rosto detectado
+            empty_metrics = {"h": 0.5, "v": 0.5, "blink_l": 0.0, "blink_r": 0.0,
+                              "brow": 0.0, "jaw": 0.0}
+            return fired, empty_metrics  # nenhum rosto detectado
 
         landmarks = face_landmarker_result.face_landmarks[0]
         blendshapes = (

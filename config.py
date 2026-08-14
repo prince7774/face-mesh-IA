@@ -87,8 +87,8 @@ GESTURE_ACTIONS = {
 
 # Câmera
 CAMERA_INDEX = 0
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
+FRAME_WIDTH = 480
+FRAME_HEIGHT = 360
 
 # Caminho do modelo do Face Landmarker (baixe conforme o README.md)
 MODEL_PATH = "face_landmarker.task"

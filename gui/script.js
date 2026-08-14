@@ -27,29 +27,43 @@ const gazeDot = document.getElementById("gaze-dot");
 
 let gestureFadeTimeout = null;
 
+// Chamada pelo Python a cada frame processado.
 window.updateStatus = function (payload) {
+  // --- imagem da câmera ---
   if (payload.frame) {
     videoEl.src = "data:image/jpeg;base64," + payload.frame;
     videoEl.classList.add("has-frame");
     placeholderEl.style.display = "none";
   }
 
+  // --- modo atual ---
   const color = MODE_COLORS[payload.mode] || "#8792A8";
   modeCircle.style.background = color;
   modeLetter.textContent = MODE_LETTERS[payload.mode] || "?";
   modeName.textContent = payload.mode === "navegacao" ? "navegação" : payload.mode;
 
+  // --- métricas (barras) ---
   const m = payload.metrics || {};
   setMeter("meter-blink-l", m.blink_l);
   setMeter("meter-blink-r", m.blink_r);
   setMeter("meter-brow", m.brow);
   setMeter("meter-jaw", m.jaw);
 
+  // --- posição do olhar ---
   if (typeof m.h === "number" && typeof m.v === "number") {
     gazeDot.style.left = clamp01(m.h) * 100 + "%";
     gazeDot.style.top = clamp01(m.v) * 100 + "%";
   }
 
+  // --- contagem de gestos ---
+  if (payload.counts) {
+    for (const key in payload.counts) {
+      const cell = document.getElementById("count-" + key);
+      if (cell) cell.textContent = payload.counts[key];
+    }
+  }
+
+  // --- gesto reconhecido (mostra e pulsa o anel) ---
   if (payload.gestures && payload.gestures.length > 0) {
     const label = GESTURE_LABELS[payload.gestures[0]] || payload.gestures[0];
     gestureName.textContent = label;
@@ -75,10 +89,12 @@ function clamp01(v) {
 
 function firePulse() {
   pulseRing.classList.remove("pulsing");
+  // força reflow para poder reiniciar a animação
   void pulseRing.offsetWidth;
   pulseRing.classList.add("pulsing");
 }
 
+// --- Busca o status no servidor local a cada 100ms ---
 async function poll() {
   try {
     const res = await fetch("/api/status");
@@ -96,6 +112,7 @@ async function poll() {
 }
 poll();
 
+// --- Botões, chamando o servidor local via fetch ---
 document.getElementById("btn-toggle-mode").addEventListener("click", () => {
   fetch("/api/toggle_mode", { method: "POST" });
 });

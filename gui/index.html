@@ -1,565 +1,100 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>TecladoIA | Teste</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #0b1020;
-            color: white;
-            min-height: 100vh;
-        }
-
-        header {
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-
-            background: #11182b;
-            border-bottom: 1px solid #26314d;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 12px;
-
-            background: #4c8dff;
-
-            font-size: 22px;
-        }
-
-        .logo h1 {
-            font-size: 22px;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            color: #72f1a5;
-            font-size: 14px;
-        }
-
-        .status-dot {
-            width: 9px;
-            height: 9px;
-
-            border-radius: 50%;
-            background: #72f1a5;
-        }
-
-        main {
-            width: 92%;
-            max-width: 1300px;
-
-            margin: 35px auto;
-
-            display: grid;
-            grid-template-columns: 1.7fr 1fr;
-            gap: 25px;
-        }
-
-        .card {
-            background: #11182b;
-            border: 1px solid #26314d;
-            border-radius: 18px;
-
-            box-shadow: 0 15px 40px rgba(0, 0, 0, .25);
-        }
-
-        /* CÂMERA */
-
-        .camera-card {
-            min-height: 600px;
-            padding: 25px;
-        }
-
-        .title {
-            margin-bottom: 20px;
-        }
-
-        .title small {
-            color: #71809e;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .title h2 {
-            margin-top: 7px;
-            font-size: 28px;
-        }
-
-        .camera {
-            height: 440px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background:
-                radial-gradient(circle at center, #1b2948 0%, #080d1b 65%);
-
-            border: 2px dashed #344568;
-            border-radius: 15px;
-
-            position: relative;
-            overflow: hidden;
-        }
-
-        .camera-content {
-            text-align: center;
-        }
-
-        .camera-icon {
-            font-size: 75px;
-            margin-bottom: 15px;
-        }
-
-        .camera-content h3 {
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
-
-        .camera-content p {
-            color: #71809e;
-        }
-
-        .camera-label {
-            position: absolute;
-
-            top: 15px;
-            left: 15px;
-
-            padding: 8px 12px;
-
-            border-radius: 8px;
-
-            background: rgba(0, 0, 0, .5);
-
-            color: #72f1a5;
-
-            font-size: 13px;
-        }
-
-        /* PAINEL */
-
-        .side {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .panel {
-            padding: 22px;
-        }
-
-        .panel-title {
-            color: #71809e;
-
-            text-transform: uppercase;
-
-            font-size: 12px;
-
-            letter-spacing: 1.5px;
-
-            margin-bottom: 15px;
-        }
-
-        .mode {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .mode-circle {
-            width: 60px;
-            height: 60px;
-
-            border-radius: 50%;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: #4c8dff;
-
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .mode strong {
-            display: block;
-            font-size: 20px;
-        }
-
-        .mode span {
-            color: #71809e;
-            font-size: 13px;
-        }
-
-        .gesture {
-            font-size: 25px;
-            font-weight: bold;
-
-            color: #4c8dff;
-        }
-
-        .meter {
-            margin-bottom: 17px;
-        }
-
-        .meter-top {
-            display: flex;
-            justify-content: space-between;
-
-            margin-bottom: 7px;
-
-            font-size: 13px;
-        }
-
-        .meter-top span:last-child {
-            color: #71809e;
-        }
-
-        .bar {
-            height: 8px;
-
-            background: #202b44;
-
-            border-radius: 10px;
-
-            overflow: hidden;
-        }
-
-        .fill {
-            height: 100%;
-
-            width: 65%;
-
-            background: #4c8dff;
-
-            border-radius: 10px;
-        }
-
-        .gaze {
-            margin-top: 20px;
-
-            height: 130px;
-
-            position: relative;
-
-            border: 1px solid #2c3957;
-
-            background: #0b1020;
-
-            border-radius: 12px;
-        }
-
-        .gaze-dot {
-            position: absolute;
-
-            width: 15px;
-            height: 15px;
-
-            border-radius: 50%;
-
-            background: #4c8dff;
-
-            left: 50%;
-            top: 50%;
-
-            transform: translate(-50%, -50%);
-
-            box-shadow: 0 0 20px #4c8dff;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        button {
-            flex: 1;
-
-            border: none;
-
-            padding: 14px;
-
-            border-radius: 10px;
-
-            color: white;
-
-            font-weight: bold;
-
-            cursor: pointer;
-
-            background: #4c8dff;
-
-            transition: .2s;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-
-            filter: brightness(1.15);
-        }
-
-        button.secondary {
-            background: #202b44;
-        }
-
-        footer {
-            text-align: center;
-
-            color: #52617e;
-
-            padding: 20px;
-
-            font-size: 13px;
-        }
-
-        @media (max-width: 900px) {
-
-            main {
-                grid-template-columns: 1fr;
-            }
-
-            .camera {
-                height: 350px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>TecladoIA</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
+  <div class="app">
 
-    <div class="logo">
-
-        <div class="logo-icon">
-            ♿
-        </div>
-
+    <!-- Coluna esquerda: câmera -->
+    <section class="camera-panel">
+      <header class="camera-header">
+        <span class="eyebrow">Câmera</span>
         <h1>TecladoIA</h1>
+      </header>
 
-    </div>
-
-    <div class="status">
-        <div class="status-dot"></div>
-        Sistema online
-    </div>
-
-</header>
-
-
-<main>
-
-    <!-- CÂMERA -->
-
-    <section class="card camera-card">
-
-        <div class="title">
-
-            <small>Visão computacional</small>
-
-            <h2>Monitoramento facial</h2>
-
+      <div class="video-frame">
+        <img id="video" alt="Imagem da câmera com detecção facial">
+        <div id="video-placeholder" class="video-placeholder">
+          <p>Aguardando imagem da câmera…</p>
+          <p class="video-placeholder-sub">Verifique se uma câmera está conectada e o índice em <code>config.py</code> está correto.</p>
         </div>
-
-        <div class="camera">
-
-            <div class="camera-label">
-                ● CÂMERA DE TESTE
-            </div>
-
-            <div class="camera-content">
-
-                <div class="camera-icon">
-                    📷
-                </div>
-
-                <h3>Área da câmera</h3>
-
-                <p>
-                    A interface está funcionando corretamente.
-                </p>
-
-            </div>
-
-        </div>
-
+      </div>
     </section>
 
+    <!-- Coluna direita: status -->
+    <aside class="status-panel">
 
-    <!-- PAINEL -->
+      <div class="mode-card">
+        <span class="eyebrow">Modo atual</span>
+        <div class="mode-indicator" id="mode-indicator">
+          <div class="pulse-ring" id="pulse-ring"></div>
+          <div class="mode-circle" id="mode-circle">
+            <span id="mode-letter">M</span>
+          </div>
+        </div>
+        <span class="mode-name" id="mode-name">mouse</span>
+        <span class="mode-hint">Levante as sobrancelhas para alternar</span>
+      </div>
 
-    <aside class="side">
+      <div class="gesture-card">
+        <span class="eyebrow">Último gesto</span>
+        <span class="gesture-name" id="gesture-name">—</span>
+      </div>
 
-        <div class="card panel">
+      <div class="metrics-card">
+        <span class="eyebrow">Leituras ao vivo</span>
 
-            <div class="panel-title">
-                Modo atual
-            </div>
-
-            <div class="mode">
-
-                <div class="mode-circle">
-                    M
-                </div>
-
-                <div>
-                    <strong>Mouse</strong>
-                    <span>Controle pelo olhar</span>
-                </div>
-
-            </div>
-
+        <div class="meter-row">
+          <span class="meter-label">Piscar (E)</span>
+          <div class="meter"><div class="meter-fill" id="meter-blink-l"></div></div>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Piscar (D)</span>
+          <div class="meter"><div class="meter-fill" id="meter-blink-r"></div></div>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Sobrancelha</span>
+          <div class="meter"><div class="meter-fill" id="meter-brow"></div></div>
+        </div>
+        <div class="meter-row">
+          <span class="meter-label">Boca</span>
+          <div class="meter"><div class="meter-fill" id="meter-jaw"></div></div>
         </div>
 
-
-        <div class="card panel">
-
-            <div class="panel-title">
-                Último gesto
-            </div>
-
-            <div class="gesture">
-                Nenhum gesto
-            </div>
-
+        <span class="meter-label gaze-label">Direção do olhar</span>
+        <div class="gaze-box">
+          <div class="gaze-dot" id="gaze-dot"></div>
         </div>
+      </div>
 
+      <div class="counts-card">
+        <span class="eyebrow">Contagem de gestos</span>
+        <table class="counts-table" id="counts-table">
+          <tbody>
+            <tr><td>Piscar duplo</td><td id="count-double_blink">0</td></tr>
+            <tr><td>Sobrancelha</td><td id="count-brow_raise">0</td></tr>
+            <tr><td>Boca aberta</td><td id="count-mouth_open">0</td></tr>
+            <tr><td>Olhar esquerda</td><td id="count-gaze_left">0</td></tr>
+            <tr><td>Olhar direita</td><td id="count-gaze_right">0</td></tr>
+            <tr><td>Olhar cima</td><td id="count-gaze_up">0</td></tr>
+            <tr><td>Olhar baixo</td><td id="count-gaze_down">0</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-        <div class="card panel">
-
-            <div class="panel-title">
-                Leituras ao vivo
-            </div>
-
-            <div class="meter">
-
-                <div class="meter-top">
-                    <span>Piscada esquerda</span>
-                    <span>65%</span>
-                </div>
-
-                <div class="bar">
-                    <div class="fill"></div>
-                </div>
-
-            </div>
-
-
-            <div class="meter">
-
-                <div class="meter-top">
-                    <span>Piscada direita</span>
-                    <span>42%</span>
-                </div>
-
-                <div class="bar">
-                    <div class="fill" style="width:42%"></div>
-                </div>
-
-            </div>
-
-
-            <div class="meter">
-
-                <div class="meter-top">
-                    <span>Sobrancelha</span>
-                    <span>28%</span>
-                </div>
-
-                <div class="bar">
-                    <div class="fill" style="width:28%"></div>
-                </div>
-
-            </div>
-
-
-            <div class="meter">
-
-                <div class="meter-top">
-                    <span>Boca</span>
-                    <span>18%</span>
-                </div>
-
-                <div class="bar">
-                    <div class="fill" style="width:18%"></div>
-                </div>
-
-            </div>
-
-
-            <div class="meter-top">
-                <span>Direção do olhar</span>
-            </div>
-
-            <div class="gaze">
-
-                <div class="gaze-dot"></div>
-
-            </div>
-
-        </div>
-
-
-        <div class="card panel">
-
-            <div class="buttons">
-
-                <button onclick="alert('Botão funcionando!')">
-                    Testar
-                </button>
-
-                <button
-                    class="secondary"
-                    onclick="document.querySelector('.gesture').textContent='Piscar duplo'">
-                    Simular gesto
-                </button>
-
-            </div>
-
-        </div>
+      <div class="actions-card">
+        <button id="btn-toggle-mode" class="btn btn-primary">Alternar modo</button>
+        <button id="btn-quit" class="btn btn-ghost">Encerrar</button>
+      </div>
 
     </aside>
 
-</main>
+  </div>
 
-
-<footer>
-    TecladoIA • Sistema de Acessibilidade via Expressões Faciais
-</footer>
-
-
+  <script src="script.js"></script>
 </body>
 </html>
-```

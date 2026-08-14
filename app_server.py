@@ -36,17 +36,41 @@ PORT = 8765
 app = Flask(__name__, static_folder=None)
 
 
+GESTURE_LABELS_PT = {
+    "double_blink": "Piscar duplo",
+    "brow_raise": "Sobrancelha",
+    "mouth_open": "Boca aberta",
+    "gaze_left": "Olhar esquerda",
+    "gaze_right": "Olhar direita",
+    "gaze_up": "Olhar cima",
+    "gaze_down": "Olhar baixo",
+}
+
+
+def draw_face_landmarks(frame, face_landmarker_result):
+    """Desenha um pontinho verde para cada ponto de referência detectado no rosto."""
+    if not face_landmarker_result.face_landmarks:
+        return
+    h, w = frame.shape[:2]
+    landmarks = face_landmarker_result.face_landmarks[0]
+    for lm in landmarks:
+        x, y = int(lm.x * w), int(lm.y * h)
+        cv2.circle(frame, (x, y), 1, (150, 255, 0), -1)
+
+
 class SharedState:
     def __init__(self):
         self.running = True
         self.detector = GestureDetector()
         self.executor = ActionExecutor()
         self.lock = threading.Lock()
+        self.gesture_counts = {k: 0 for k in GESTURE_LABELS_PT}
         self.latest = {
             "frame": None,
             "mode": "mouse",
             "gestures": [],
             "metrics": {},
+            "counts": dict(self.gesture_counts),
             "camera_error": None,
         }
 
@@ -141,6 +165,12 @@ def camera_loop():
         state.executor.handle_gestures(gestures_fired)
         status_bus.write_status(state.executor.mode, gestures_fired)
 
+        for g in gestures_fired:
+            if g in state.gesture_counts:
+                state.gesture_counts[g] += 1
+
+        draw_face_landmarks(frame, result)
+
         ok2, buf = cv2.imencode(".jpg", frame, [int(cv2.IMWRITE_JPEG_QUALITY), 70])
         if ok2:
             with state.lock:
@@ -149,6 +179,7 @@ def camera_loop():
                     "mode": state.executor.mode,
                     "gestures": gestures_fired,
                     "metrics": metrics,
+                    "counts": dict(state.gesture_counts),
                     "camera_error": None,
                 }
 
